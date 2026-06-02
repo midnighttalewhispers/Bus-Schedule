@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: bus-timetable-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist/frontend/browser
+
+  - type: web
+    name: bus-timetable-backend
+    env: docker
+    rootDir: backend
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: bus-timetable-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: bus-timetable-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: bus-timetable-db
+          property: password
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+
+databases:
+  - name: bus-timetable-db
+    databaseName: bustimetable
+    user: dbuser
