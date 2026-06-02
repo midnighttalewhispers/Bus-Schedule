@@ -1,0 +1,34 @@
+<!-- Toasts -->
+<div class="popup-container">
+  <div *ngFor="let popup of toasts$ | async" 
+       class="popup-card" 
+       [ngClass]="'popup-' + popup.type">
+    <div class="popup-icon-container">
+      <i [class]="getIcon(popup.type)"></i>
+    </div>
+    <div class="popup-content">
+      <h4 class="popup-title">{{ popup.title }}</h4>
+      <p class="popup-message">{{ popup.message }}</p>
+    </div>
+    <button class="popup-close" (click)="remove(popup.id)">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Confirm Modals -->
+<div class="confirm-backdrop" *ngIf="(confirms$ | async)?.length">
+  <div *ngFor="let popup of confirms$ | async" class="confirm-modal">
+    <div class="confirm-icon-container">
+      <i [class]="getIcon(popup.type)"></i>
+    </div>
+    <div class="confirm-content">
+      <h3 class="confirm-title">{{ popup.title }}</h3>
+      <p class="confirm-message">{{ popup.message }}</p>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" (click)="cancelAction(popup)">Cancel</button>
+      <button class="btn btn-danger" (click)="confirmAction(popup)">Delete</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,228 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     BusFormComponent Template — Add / Edit Bus Modal Dialog
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" *ngIf="isVisible" (click)="onCancel()"></div>
+
+<!-- Modal Panel -->
+<div class="modal-panel" *ngIf="isVisible" role="dialog" aria-modal="true"
+     [attr.aria-label]="isEditMode ? 'Edit Bus Record' : 'Add New Bus Record'">
+
+  <!-- Header -->
+  <div class="modal-header">
+    <div class="modal-title-group">
+      <span class="modal-icon"><i class="fa-solid" [ngClass]="isEditMode ? 'fa-pen' : 'fa-bus'"></i></span>
+      <h2 class="modal-title">{{ isEditMode ? 'Edit Bus Record' : 'Add New Bus' }}</h2>
+    </div>
+    <button class="btn-close" (click)="onCancel()" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Form Body -->
+  <form [formGroup]="busForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="modal-body">
+
+      <!-- Row 1: Bus Name -->
+      <div class="form-group full-width">
+        <label for="busName" class="form-label">
+          Bus Name <span class="required">*</span>
+        </label>
+        <input
+          id="busName"
+          type="text"
+          class="form-control"
+          [class.error]="isInvalid('busName')"
+          formControlName="busName"
+          placeholder="e.g. Intercity Express, Luxury Liner"
+          maxlength="100"
+        />
+        <span class="error-msg" *ngIf="isInvalid('busName')">
+          <ng-container *ngIf="f('busName')?.errors?.['required']">Bus name is required.</ng-container>
+          <ng-container *ngIf="f('busName')?.errors?.['maxlength']">Max 100 characters.</ng-container>
+        </span>
+      </div>
+
+      <!-- Row 2: Route Number and Number Plate (2 columns) -->
+      <div class="form-row">
+        <div class="form-group autocomplete-container">
+          <label for="routeNumber" class="form-label">
+            Route Number <span class="optional">(optional)</span>
+          </label>
+          <input
+            id="routeNumber"
+            type="text"
+            class="form-control"
+            [class.error]="isInvalid('routeNumber')"
+            formControlName="routeNumber"
+            placeholder="e.g. EX-01, 138"
+            maxlength="50"
+            autocomplete="off"
+          />
+          <span class="error-msg" *ngIf="isInvalid('routeNumber')">
+            <ng-container *ngIf="f('routeNumber')?.errors?.['maxlength']">Max 50 characters.</ng-container>
+          </span>
+          <div class="autocomplete-dropdown" *ngIf="filteredRouteNumbers.length > 0">
+            <div class="autocomplete-item" *ngFor="let route of filteredRouteNumbers" (click)="selectRouteNumber(route)">
+              {{ route }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="numberPlate" class="form-label">
+            Number Plate <span class="optional">(optional)</span>
+          </label>
+          <input
+            id="numberPlate"
+            type="text"
+            class="form-control"
+            [class.error]="isInvalid('numberPlate')"
+            formControlName="numberPlate"
+            placeholder="e.g. ND-1234, WP NC-9876"
+            maxlength="20"
+          />
+          <span class="error-msg" *ngIf="isInvalid('numberPlate')">
+            <ng-container *ngIf="f('numberPlate')?.errors?.['maxlength']">Max 20 characters.</ng-container>
+          </span>
+        </div>
+      </div>
+
+      <!-- Row 2: From → To (2 columns) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fromDestination" class="form-label">
+            From Destination <span class="required">*</span>
+          </label>
+          <input
+            id="fromDestination"
+            type="text"
+            class="form-control"
+            [class.error]="isInvalid('fromDestination')"
+            formControlName="fromDestination"
+            placeholder="e.g. Colombo"
+            maxlength="100"
+          />
+          <span class="error-msg" *ngIf="isInvalid('fromDestination')">
+            Origin city is required.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="toDestination" class="form-label">
+            To Destination <span class="required">*</span>
+          </label>
+          <input
+            id="toDestination"
+            type="text"
+            class="form-control"
+            [class.error]="isInvalid('toDestination')"
+            formControlName="toDestination"
+            placeholder="e.g. Kandy"
+            maxlength="100"
+          />
+          <span class="error-msg" *ngIf="isInvalid('toDestination')">
+            Destination city is required.
+          </span>
+        </div>
+      </div>
+
+      <!-- Row 3: Departure Time + Return Time (2 columns) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="departureTime" class="form-label">
+            Departure Time <span class="required">*</span>
+          </label>
+          <input
+            id="departureTime"
+            type="text"
+            class="form-control"
+            [class.error]="isInvalid('departureTime')"
+            formControlName="departureTime"
+            placeholder="e.g. 06:30 AM"
+          />
+          <span class="error-msg" *ngIf="isInvalid('departureTime')">
+            Departure time is required.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="returnTime" class="form-label">
+            Return Time <span class="optional">(optional)</span>
+          </label>
+          <input
+            id="returnTime"
+            type="text"
+            class="form-control"
+            formControlName="returnTime"
+            placeholder="e.g. 05:00 PM"
+          />
+        </div>
+      </div>
+
+      <!-- Row 4: Phone and Notes -->
+      <div class="form-row">
+        <div class="form-group" formArrayName="contactPhones">
+          <label class="form-label">
+            Contact Phone <span class="required">*</span>
+          </label>
+          <div class="phone-input-group" *ngFor="let phone of contactPhones.controls; let i = index">
+            <input
+              type="text"
+              class="form-control"
+              [class.error]="isPhoneInvalid(i)"
+              [formControlName]="i"
+              placeholder="e.g. 0771234567"
+            />
+            <button
+              type="button"
+              class="action-btn remove-btn"
+              *ngIf="contactPhones.length > 1"
+              (click)="removeContactPhone(i)"
+              title="Remove phone number"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button
+              type="button"
+              class="action-btn add-btn"
+              *ngIf="i === contactPhones.length - 1"
+              (click)="addContactPhone()"
+              title="Add another phone number"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="error-msg" *ngIf="isPhoneInvalid(i)">
+              Valid Sri Lankan number required.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="notes" class="form-label">
+            Notes <span class="optional">(optional)</span>
+          </label>
+          <textarea
+            id="notes"
+            class="form-control textarea"
+            formControlName="notes"
+            placeholder="e.g. AC, WiFi available. Book in advance on weekends."
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+
+    </div><!-- /.modal-body -->
+
+    <!-- Footer Actions -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" id="submitBusBtn">
+        <span *ngIf="!isEditMode"><i class="fa-solid fa-bus"></i> Add Bus</span>
+        <span *ngIf="isEditMode"><i class="fa-solid fa-floppy-disk"></i> Save Changes</span>
+      </button>
+    </div>
+
+  </form>
+</div>

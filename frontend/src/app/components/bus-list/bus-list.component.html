@@ -1,0 +1,133 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     BusListComponent Template — Main page
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- ── Hero Section ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Sri Lanka Luxury<br><span class="hero-accent">Bus Timetable</span></h1>
+    <p class="hero-subtitle">
+      Find and manage premium intercity bus schedules across Sri Lanka.
+      Colombo · Kandy · Galle · Jaffna · Nuwara Eliya
+    </p>
+    <button class="btn btn-hero" id="addBusBtn" (click)="openAddForm()">
+      + Add New Bus Schedule
+    </button>
+  </div>
+</section>
+
+<!-- ── Search Bar ─────────────────────────────────────────────────────── -->
+<section class="search-section">
+  <div class="search-container">
+    <div class="search-input-wrapper">
+      <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <input type="text" id="searchInput" class="search-input"
+        placeholder="Search by destination (e.g. Kandy, Colombo, Galle)..." [(ngModel)]="searchKeyword"
+        (input)="onSearch()" aria-label="Search bus destinations" />
+      <button *ngIf="searchKeyword" class="clear-btn" (click)="clearSearch()" aria-label="Clear search"><i
+          class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="result-count" *ngIf="!isLoading">
+      {{ buses.length }} {{ buses.length === 1 ? 'route' : 'routes' }} found
+    </div>
+  </div>
+</section>
+
+<!-- ── Toast Messages ─────────────────────────────────────────────────── -->
+
+<!-- ── Loading Spinner ────────────────────────────────────────────────── -->
+<div class="loading-state" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading bus schedules…</p>
+</div>
+
+<!-- ── Empty State ────────────────────────────────────────────────────── -->
+<div class="empty-state" *ngIf="!isLoading && buses.length === 0">
+  <div class="empty-icon"><i class="fa-solid fa-bus"></i></div>
+  <h3>No bus schedules found</h3>
+  <p *ngIf="searchKeyword">No routes match "<strong>{{ searchKeyword }}</strong>". Try a different destination.</p>
+  <p *ngIf="!searchKeyword">No bus schedules have been added yet.</p>
+  <button class="btn btn-primary" (click)="openAddForm()">Add First Schedule</button>
+</div>
+
+<!-- ── Bus Cards Grid ─────────────────────────────────────────────────── -->
+<section class="cards-section" *ngIf="!isLoading && buses.length > 0">
+  <div class="cards-grid">
+    <article class="bus-card" *ngFor="let bus of buses" [attr.aria-label]="bus.busName">
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="bus-icon"><i class="fa-solid fa-bus"></i></span>
+          <div class="title-and-badges">
+            <h3 class="card-title">{{ bus.busName }}</h3>
+            <div class="badges" *ngIf="bus.routeNumber || bus.numberPlate">
+              <span class="badge" *ngIf="bus.routeNumber">Route {{ bus.routeNumber }}</span>
+              <span class="badge badge-secondary" *ngIf="bus.numberPlate">{{ bus.numberPlate }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="action-btn edit-btn" (click)="openEditForm(bus)" [attr.aria-label]="'Edit ' + bus.busName"
+            title="Edit">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button class="action-btn delete-btn" (click)="onDelete(bus)" [attr.aria-label]="'Delete ' + bus.busName"
+            title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Route Row -->
+      <div class="route-row">
+        <div class="route-city">
+          <span class="city-label">FROM</span>
+          <span class="city-name">{{ bus.fromDestination }}</span>
+        </div>
+        <div class="route-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="route-city">
+          <span class="city-label">TO</span>
+          <span class="city-name">{{ bus.toDestination }}</span>
+        </div>
+      </div>
+
+      <!-- Time Row -->
+      <div class="time-row">
+        <div class="time-item">
+          <span class="time-icon"><i class="fa-regular fa-clock"></i></span>
+          <div>
+            <div class="time-label">Departure</div>
+            <div class="time-value">{{ bus.departureTime }}</div>
+          </div>
+        </div>
+        <div class="time-item" *ngIf="bus.returnTime">
+          <span class="time-icon"><i class="fa-solid fa-rotate"></i></span>
+          <div>
+            <div class="time-label">Return</div>
+            <div class="time-value">{{ bus.returnTime }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Row -->
+      <div class="contact-row" *ngFor="let phone of bus.contactPhone ? bus.contactPhone.split(',') : []">
+        <span class="contact-icon"><i class="fa-solid fa-phone"></i></span>
+        <a [href]="'tel:' + phone.trim()" class="contact-phone">
+          {{ phone.trim() }}
+        </a>
+      </div>
+
+      <!-- Notes (if present) -->
+      <div class="notes-row" *ngIf="bus.notes">
+        <span class="notes-icon"><i class="fa-solid fa-note-sticky"></i></span>
+        <p class="notes-text">{{ bus.notes }}</p>
+      </div>
+
+    </article>
+  </div>
+</section>
+
+<!-- ── Add/Edit Modal Form ────────────────────────────────────────────── -->
+<app-bus-form [isVisible]="isFormVisible" [busToEdit]="busToEdit" [allRouteNumbers]="allRouteNumbers"
+  (formSubmit)="onFormSubmit($event)" (formCancel)="closeForm()"></app-bus-form>
