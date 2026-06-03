@@ -19,9 +19,6 @@
       <button *ngIf="searchKeyword" class="clear-btn" (click)="clearSearch()" aria-label="Clear search"><i
           class="fa-solid fa-xmark"></i></button>
     </div>
-    <div class="result-count" *ngIf="!isLoading">
-      {{ buses.length }} {{ buses.length === 1 ? 'route' : 'routes' }} found
-    </div>
   </div>
 </section>
 
