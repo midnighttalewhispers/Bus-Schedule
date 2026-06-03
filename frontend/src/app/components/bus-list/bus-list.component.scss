@@ -27,7 +27,7 @@
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.15), transparent 60%);
+  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 60%);
   pointer-events: none;
 }
 
@@ -164,7 +164,7 @@
   &:focus {
     background: var(--surface);
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   }
 }
 
@@ -353,11 +353,11 @@
 .badge {
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(245, 158, 11, 0.15); /* accent color */
-  color: #b45309;
+  background: rgba(59, 130, 246, 0.15); /* accent color */
+  color: #1e40af;
   padding: 0.1rem 0.5rem;
   border-radius: 6px;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .badge-secondary {
