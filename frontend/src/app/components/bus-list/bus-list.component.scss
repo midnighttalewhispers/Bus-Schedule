@@ -108,31 +108,7 @@
   100% { transform: translateY(0px) rotate(0deg); }
 }
 
-.btn-hero {
-  background: var(--gradient-accent);
-  color: var(--text-inverse);
-  font-size: 1.05rem;
-  padding: 0.8rem 2rem;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-height: 48px; /* Mobile tap target */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
-  }
-  
-  @media (max-width: 767px) {
-    width: 100%;
-    max-width: 300px;
-  }
-}
 
 // ── Search Section ────────────────────────────────────────────────────────
 
@@ -390,35 +366,7 @@
   border: 1px solid var(--border);
 }
 
-.card-actions {
-  display: flex;
-  gap: 0.25rem;
-}
 
-.action-btn {
-  background: transparent;
-  border: none;
-  width: 44px; /* Mobile tap target */
-  height: 44px; /* Mobile tap target */
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1.1rem;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-
-  &.edit-btn { 
-    color: var(--text-secondary);
-    &:hover { background: var(--surface-hover); color: var(--text-primary); }
-  }
-  &.delete-btn {
-    color: var(--danger);
-    &:hover { background: var(--danger-bg); }
-  }
-}
 
 // ── Route Info ────────────────────────────────────────────────────────────
 

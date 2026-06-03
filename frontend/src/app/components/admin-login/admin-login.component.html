@@ -1,0 +1,88 @@
+<div class="login-page">
+  <!-- Decorative Background -->
+  <div class="login-bg">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+  </div>
+
+  <!-- Login Card -->
+  <div class="login-card glass">
+
+    <!-- Header / Branding -->
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="logo-circle">
+          <i class="fa-solid fa-bus"></i>
+        </div>
+      </div>
+      <h1 class="login-title">LankaBus</h1>
+      <p class="login-subtitle">Admin Portal</p>
+    </div>
+
+    <!-- Form -->
+    <form class="login-form" (ngSubmit)="onLogin()" novalidate>
+
+      <!-- Error Alert -->
+      <div class="error-alert" *ngIf="errorMessage">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <label for="loginEmail" class="input-label">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+          <input
+            id="loginEmail"
+            type="email"
+            class="input-field"
+            placeholder="admin@gmail.com"
+            [(ngModel)]="email"
+            name="email"
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label for="loginPassword" class="input-label">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+          <input
+            id="loginPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            class="input-field"
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            name="password"
+            autocomplete="current-password"
+          />
+          <button type="button" class="toggle-password" (click)="togglePassword()" aria-label="Toggle password visibility">
+            <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn-login" [disabled]="isLoading" id="loginSubmitBtn">
+        <span *ngIf="!isLoading">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </span>
+        <span *ngIf="isLoading" class="loading-state">
+          <span class="spinner-small"></span> Signing in…
+        </span>
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <a routerLink="/" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Bus Schedules
+      </a>
+    </div>
+  </div>
+</div>

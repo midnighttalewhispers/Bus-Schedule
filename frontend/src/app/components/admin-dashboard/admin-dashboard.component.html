@@ -1,0 +1,252 @@
+<div class="admin-layout">
+
+  <!-- ── Sidebar / Nav (Desktop & Mobile) ────────────────────────────── -->
+  <aside class="admin-sidebar" [class.mobile-open]="showMobileMenu">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-bus"></i></span>
+        <span class="logo-text">LankaBus</span>
+      </div>
+      <button class="mobile-close" (click)="toggleMobileMenu()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item" [class.active]="activeTab === 'buses'" (click)="switchTab('buses')">
+        <i class="fa-solid fa-route"></i>
+        <span>Bus Schedules</span>
+      </button>
+      <button class="nav-item" [class.active]="activeTab === 'admins'" (click)="switchTab('admins')">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Manage Admins</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="admin-info">
+          <span class="admin-name">{{ currentAdmin?.name }}</span>
+          <span class="admin-email">{{ currentAdmin?.email }}</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" *ngIf="showMobileMenu" (click)="toggleMobileMenu()"></div>
+
+  <!-- ── Main Content Area ───────────────────────────────────────────── -->
+  <main class="admin-main">
+
+    <!-- Mobile Header -->
+    <header class="mobile-header glass">
+      <button class="mobile-toggle" (click)="toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-bus"></i></span>
+        <span class="logo-text">Admin</span>
+      </div>
+    </header>
+
+    <div class="main-content-wrapper">
+
+      <!-- ========================================================= -->
+      <!-- TAB: BUS SCHEDULES -->
+      <!-- ========================================================= -->
+      <ng-container *ngIf="activeTab === 'buses'">
+        
+        <!-- Header -->
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Manage Bus Schedules</h1>
+            <p class="section-subtitle">Add, edit, or remove bus timetable records.</p>
+          </div>
+          <button class="btn btn-primary" (click)="openAddForm()">
+            <i class="fa-solid fa-plus"></i> Add New Bus
+          </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container glass">
+          <div class="search-input-wrapper">
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" class="search-input" placeholder="Search by destination..." 
+                   [(ngModel)]="searchKeyword" (input)="onSearch()" />
+            <button *ngIf="searchKeyword" class="clear-btn" (click)="clearSearch()">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading / Empty -->
+        <div class="state-container" *ngIf="isLoading">
+          <div class="spinner"></div>
+          <p>Loading bus schedules…</p>
+        </div>
+
+        <div class="state-container empty-state" *ngIf="!isLoading && buses.length === 0">
+          <div class="empty-icon"><i class="fa-solid fa-bus"></i></div>
+          <h3>No bus schedules found</h3>
+          <p *ngIf="searchKeyword">No routes match "<strong>{{ searchKeyword }}</strong>".</p>
+          <button *ngIf="!searchKeyword" class="btn btn-primary" (click)="openAddForm()">Add First Schedule</button>
+        </div>
+
+        <!-- Cards Grid (Reused style from bus-list) -->
+        <div class="cards-grid" *ngIf="!isLoading && buses.length > 0">
+          <article class="bus-card" *ngFor="let bus of buses">
+            
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="bus-icon"><i class="fa-solid fa-bus"></i></span>
+                <div class="title-and-badges">
+                  <h3 class="card-title">{{ bus.busName }}</h3>
+                  <div class="badges" *ngIf="bus.routeNumber || bus.numberPlate">
+                    <span class="badge" *ngIf="bus.routeNumber">Route {{ bus.routeNumber }}</span>
+                    <span class="badge badge-secondary" *ngIf="bus.numberPlate">{{ bus.numberPlate }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit-btn" (click)="openEditForm(bus)" title="Edit">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="action-btn delete-btn" (click)="onDelete(bus)" title="Delete">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="route-row">
+              <div class="route-city">
+                <span class="city-label">FROM</span>
+                <span class="city-name">{{ bus.fromDestination }}</span>
+              </div>
+              <div class="route-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="route-city">
+                <span class="city-label">TO</span>
+                <span class="city-name">{{ bus.toDestination }}</span>
+              </div>
+            </div>
+
+            <div class="time-row">
+              <div class="time-item">
+                <span class="time-icon"><i class="fa-regular fa-clock"></i></span>
+                <div>
+                  <div class="time-label">Departure</div>
+                  <div class="time-value">{{ bus.departureTime }}</div>
+                </div>
+              </div>
+              <div class="time-item" *ngIf="bus.returnTime">
+                <span class="time-icon"><i class="fa-solid fa-rotate"></i></span>
+                <div>
+                  <div class="time-label">Return</div>
+                  <div class="time-value">{{ bus.returnTime }}</div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+        </div>
+      </ng-container>
+
+      <!-- ========================================================= -->
+      <!-- TAB: MANAGE ADMINS -->
+      <!-- ========================================================= -->
+      <ng-container *ngIf="activeTab === 'admins'">
+        
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Manage Admins</h1>
+            <p class="section-subtitle">Create and manage administrator accounts.</p>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          
+          <!-- Create Admin Form -->
+          <div class="create-admin-card glass">
+            <h3 class="card-heading">Create New Admin</h3>
+            <form (ngSubmit)="onCreateAdmin()" novalidate class="admin-form">
+              
+              <div class="error-alert" *ngIf="adminFormError">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ adminFormError }}</span>
+              </div>
+
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" class="form-control" [(ngModel)]="newAdminName" name="newName" placeholder="e.g. John Doe">
+              </div>
+
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" class="form-control" [(ngModel)]="newAdminEmail" name="newEmail" placeholder="admin@example.com">
+              </div>
+
+              <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                  <input [type]="showNewAdminPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="newAdminPassword" name="newPassword" placeholder="Minimum 6 characters">
+                  <button type="button" class="toggle-password" (click)="toggleNewAdminPassword()">
+                    <i class="fa-solid" [ngClass]="showNewAdminPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary full-width">
+                <i class="fa-solid fa-user-plus"></i> Create Admin
+              </button>
+            </form>
+          </div>
+
+          <!-- Admins List -->
+          <div class="admin-list-container">
+            <h3 class="card-heading mb-3">Current Administrators</h3>
+            
+            <div class="admin-list">
+              <div class="admin-list-card" *ngFor="let admin of admins" [class.is-current]="isCurrentAdmin(admin.email)">
+                <div class="admin-list-info">
+                  <div class="admin-avatar">
+                    <i class="fa-solid fa-user-shield"></i>
+                  </div>
+                  <div>
+                    <h4 class="admin-list-name">
+                      {{ admin.name }}
+                      <span class="current-badge" *ngIf="isCurrentAdmin(admin.email)">You</span>
+                    </h4>
+                    <p class="admin-list-email">{{ admin.email }}</p>
+                    <p class="admin-list-date">Added: {{ admin.createdAt | date:'mediumDate' }}</p>
+                  </div>
+                </div>
+                
+                <button class="btn-delete-admin" 
+                        *ngIf="!isCurrentAdmin(admin.email)"
+                        (click)="onDeleteAdmin(admin)"
+                        title="Remove Admin">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+    </div>
+  </main>
+</div>
+
+<!-- Modal Form -->
+<app-bus-form 
+  [isVisible]="isFormVisible" 
+  [busToEdit]="busToEdit" 
+  [allRouteNumbers]="allRouteNumbers"
+  (formSubmit)="onFormSubmit($event)" 
+  (formCancel)="closeForm()">
+</app-bus-form>

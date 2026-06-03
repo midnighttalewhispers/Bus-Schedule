@@ -1,22 +1,24 @@
 <div class="app-container">
   <app-popup></app-popup>
-  <header class="navbar glass">
+  
+  <header class="navbar glass" *ngIf="!isAdminRoute">
     <div class="nav-content">
       <div class="logo">
         <span class="logo-icon"><i class="fa-solid fa-bus"></i></span>
         <span class="logo-text">LankaBus</span>
       </div>
       <nav class="nav-links">
-        <a href="#" class="nav-link active">Schedules</a>
+        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Schedules</a>
+        <a routerLink="/admin/dashboard" class="nav-link" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Dashboard</a>
       </nav>
     </div>
   </header>
 
-  <main class="main-content">
-    <app-bus-list></app-bus-list>
+  <main [class.main-content]="!isAdminRoute">
+    <router-outlet></router-outlet>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" *ngIf="!isAdminRoute">
     <p>&copy; 2026 Sri Lanka Luxury Bus Timetable.</p>
   </footer>
 </div>

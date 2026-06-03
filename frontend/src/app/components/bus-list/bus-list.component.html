@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════════════════════════
-     BusListComponent Template — Main page
+     BusListComponent Template — Public Page
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <!-- ── Hero Section ──────────────────────────────────────────────────── -->
@@ -7,12 +7,9 @@
   <div class="hero-content">
     <h1 class="hero-title">Sri Lanka Luxury<br><span class="hero-accent">Bus Timetable</span></h1>
     <p class="hero-subtitle">
-      Find and manage premium intercity bus schedules across Sri Lanka.
+      Find and view premium intercity bus schedules across Sri Lanka.
       Colombo · Kandy · Galle · Jaffna · Nuwara Eliya
     </p>
-    <button class="btn btn-hero" id="addBusBtn" (click)="openAddForm()">
-      + Add New Bus Schedule
-    </button>
   </div>
 </section>
 
@@ -33,8 +30,6 @@
   </div>
 </section>
 
-<!-- ── Toast Messages ─────────────────────────────────────────────────── -->
-
 <!-- ── Loading Spinner ────────────────────────────────────────────────── -->
 <div class="loading-state" *ngIf="isLoading">
   <div class="spinner"></div>
@@ -46,8 +41,7 @@
   <div class="empty-icon"><i class="fa-solid fa-bus"></i></div>
   <h3>No bus schedules found</h3>
   <p *ngIf="searchKeyword">No routes match "<strong>{{ searchKeyword }}</strong>". Try a different destination.</p>
-  <p *ngIf="!searchKeyword">No bus schedules have been added yet.</p>
-  <button class="btn btn-primary" (click)="openAddForm()">Add First Schedule</button>
+  <p *ngIf="!searchKeyword">No bus schedules are currently available.</p>
 </div>
 
 <!-- ── Bus Cards Grid ─────────────────────────────────────────────────── -->
@@ -66,16 +60,6 @@
               <span class="badge badge-secondary" *ngIf="bus.numberPlate">{{ bus.numberPlate }}</span>
             </div>
           </div>
-        </div>
-        <div class="card-actions">
-          <button class="action-btn edit-btn" (click)="openEditForm(bus)" [attr.aria-label]="'Edit ' + bus.busName"
-            title="Edit">
-            <i class="fa-solid fa-pen"></i>
-          </button>
-          <button class="action-btn delete-btn" (click)="onDelete(bus)" [attr.aria-label]="'Delete ' + bus.busName"
-            title="Delete">
-            <i class="fa-solid fa-trash"></i>
-          </button>
         </div>
       </div>
 
@@ -127,7 +111,3 @@
     </article>
   </div>
 </section>
-
-<!-- ── Add/Edit Modal Form ────────────────────────────────────────────── -->
-<app-bus-form [isVisible]="isFormVisible" [busToEdit]="busToEdit" [allRouteNumbers]="allRouteNumbers"
-  (formSubmit)="onFormSubmit($event)" (formCancel)="closeForm()"></app-bus-form>

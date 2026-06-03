@@ -11,6 +11,8 @@ export interface PopupMessage {
   duration?: number;
   onConfirm?: () => void;
   onCancel?: () => void;
+  confirmText?: string;
+  confirmClass?: string;
 }
 
 @Injectable({
@@ -41,9 +43,9 @@ export class PopupService {
     this.show('error', title, message, duration);
   }
 
-  confirm(title: string, message: string, onConfirm: () => void, onCancel?: () => void) {
+  confirm(title: string, message: string, onConfirm: () => void, onCancel?: () => void, confirmText = 'Confirm', confirmClass = 'btn-danger') {
     const id = Math.random().toString(36).substring(2, 9);
-    const popup: PopupMessage = { id, type: 'confirm', title, message, duration: 0, onConfirm, onCancel };
+    const popup: PopupMessage = { id, type: 'confirm', title, message, duration: 0, onConfirm, onCancel, confirmText, confirmClass };
     this.popupsSubject.next([...this.popupsSubject.value, popup]);
   }
 
