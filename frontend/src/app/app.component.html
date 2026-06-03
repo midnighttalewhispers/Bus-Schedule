@@ -8,7 +8,9 @@
         <span class="logo-text">LankaBus</span>
       </div>
       <nav class="nav-links">
-        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Schedules</a>
+        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fa-solid fa-route"></i>
+        </a>
         <a routerLink="/admin/dashboard" class="nav-link" routerLinkActive="active" *ngIf="authService.isLoggedIn()">Dashboard</a>
       </nav>
     </div>
