@@ -14,8 +14,7 @@
   <div class="search-container">
     <div class="search-input-wrapper">
       <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-      <input type="text" id="searchInput" class="search-input"
-        placeholder="Search by destination (e.g. Kandy, Colombo, Galle)..." [(ngModel)]="searchKeyword"
+      <input type="text" id="searchInput" class="search-input" placeholder="Search" [(ngModel)]="searchKeyword"
         (input)="onSearch()" aria-label="Search bus destinations" />
       <button *ngIf="searchKeyword" class="clear-btn" (click)="clearSearch()" aria-label="Clear search"><i
           class="fa-solid fa-xmark"></i></button>
