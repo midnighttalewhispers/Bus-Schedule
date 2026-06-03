@@ -1,9 +1,11 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Environment — Development
-// When you run: ng serve
-// Angular uses this file. API calls go to your local Spring Boot server.
+// Admin Model
+// Interface for admin user accounts stored in localStorage.
 // ─────────────────────────────────────────────────────────────────────────────
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8081/api'
-};
+
+export interface Admin {
+  email: string;
+  password: string;
+  name: string;
+  createdAt: string;   // ISO timestamp
+}

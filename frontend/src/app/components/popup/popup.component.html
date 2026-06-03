@@ -28,7 +28,7 @@
     </div>
     <div class="confirm-actions">
       <button class="btn btn-secondary" (click)="cancelAction(popup)">Cancel</button>
-      <button class="btn btn-danger" (click)="confirmAction(popup)">Delete</button>
+      <button class="btn" [ngClass]="popup.confirmClass || 'btn-danger'" (click)="confirmAction(popup)">{{ popup.confirmText || 'Confirm' }}</button>
     </div>
   </div>
 </div>

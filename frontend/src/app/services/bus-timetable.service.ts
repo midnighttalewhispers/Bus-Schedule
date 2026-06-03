@@ -18,7 +18,7 @@ import { BusTimetable } from '../models/bus-timetable.model';
 })
 export class BusTimetableService {
 
-  // The full API base URL, e.g. "http://localhost:8080/api/buses"
+  // The full API base URL, e.g. "http://localhost:8081/api/buses"
   private readonly apiUrl = `${environment.apiUrl}/buses`;
 
   constructor(private http: HttpClient) {}
