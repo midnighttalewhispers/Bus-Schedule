@@ -34,15 +34,8 @@
         <label for="loginEmail" class="input-label">Email Address</label>
         <div class="input-wrapper">
           <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
-          <input
-            id="loginEmail"
-            type="email"
-            class="input-field"
-            placeholder="admin@gmail.com"
-            [(ngModel)]="email"
-            name="email"
-            autocomplete="email"
-          />
+          <input id="loginEmail" type="email" class="input-field" placeholder="Enter your email" [(ngModel)]="email"
+            name="email" autocomplete="email" />
         </div>
       </div>
 
@@ -51,16 +44,10 @@
         <label for="loginPassword" class="input-label">Password</label>
         <div class="input-wrapper">
           <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-          <input
-            id="loginPassword"
-            [type]="showPassword ? 'text' : 'password'"
-            class="input-field"
-            placeholder="Enter your password"
-            [(ngModel)]="password"
-            name="password"
-            autocomplete="current-password"
-          />
-          <button type="button" class="toggle-password" (click)="togglePassword()" aria-label="Toggle password visibility">
+          <input id="loginPassword" [type]="showPassword ? 'text' : 'password'" class="input-field"
+            placeholder="Enter your password" [(ngModel)]="password" name="password" autocomplete="current-password" />
+          <button type="button" class="toggle-password" (click)="togglePassword()"
+            aria-label="Toggle password visibility">
             <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
           </button>
         </div>
